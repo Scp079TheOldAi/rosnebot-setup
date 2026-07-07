@@ -25,7 +25,7 @@ if [ -e "/tmp/ncat-rosnehook-webpanel.pid" ] && ps -p `cat "/tmp/ncat-rosnehook-
     echo IPC panel already running.
 else
     pushd rosnehook-ipc-web-panel
-    sudo PATH="$PATH" STEAM_LD_PRELOAD="$(cd ../ && pwd)/just-disable-vac/build/bin64/libvpcfs.so.0:$(cd ../ && pwd)/just-disable-vac/build/bin32/libvpcfs.so.0" bash ./run.sh &
+    sudo PATH="$PATH" STEAM_LD_PRELOAD="$(cd ../ && pwd)/vacbypass-modules/build/bin64/libvpcfs.so.0" bash ./run.sh &
     popd
 fi
 

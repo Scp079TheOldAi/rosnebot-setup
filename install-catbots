@@ -55,6 +55,9 @@ fi
 mkdir -p user_instances
 
 if [ ! -f /opt/rosnehook/bin/librosnehook-textmode.so ]; then
+    pushd temprosnehook
+    ./scripts/copy-libvstdlib.sh || true
+    popd
     numcpu=$(grep -c ^processor /proc/cpuinfo)
     mkdir -p build
     pushd build
@@ -71,9 +74,9 @@ if [ ! -f /opt/rosnehook/bin/librosnehook-textmode.so ]; then
     sudo chmod -R 0755 /opt/rosnehook/data/configs/
 fi
 
-if [ ! -d "./just-disable-vac" ]; then
-    git clone https://github.com/Scp079TheOldAi/just-disable-vac.git
-    pushd just-disable-vac
+if [ ! -d "./vacbypass-modules" ]; then
+    git clone https://github.com/Scp079TheOldAi/vacbypass-modules.git
+    pushd vacbypass-modules
     mkdir -p build && pushd build
     cmake .. && make
     popd; popd

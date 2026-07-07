@@ -9,7 +9,7 @@ rm -rf ./build
 rm -rf ./temprosnehook
 rm -rf ./rosnehook-ipc-server
 rm -rf ./rosnehook-ipc-web-panel
-rm -rf ./just-disable-vac
+rm -rf ./vacbypass-modules
 rm -rf ./user_instances
 rm -rf ./rosnebot-database
 sudo rm -rf /opt/rosnehook/ipc

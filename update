@@ -28,6 +28,7 @@ fi
 
 git pull --ff
 git submodule update --init --recursive
+./scripts/copy-libvstdlib.sh || true
 popd
 mkdir -p build
 pushd build
@@ -47,11 +48,10 @@ git remote set-url origin https://github.com/Scp079TheOldAi/rosnehook-ipc-server
 bash update.sh
 popd
 
-pushd just-disable-vac
+pushd vacbypass-modules
 git pull -ff
 mkdir -p build && pushd build
 cmake .. && make
-sudo cp -r bin32 /opt/
 sudo cp -r bin64 /opt/
 popd
 popd
