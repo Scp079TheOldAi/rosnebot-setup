@@ -7,12 +7,13 @@ cd "$ROOT"
 
 # shellcheck source=lib/common.sh
 source "$ROOT/lib/common.sh"
+rosne_trap_errors
 
 ensure_script_permissions "$ROOT"
 require_not_root
 require_git_repo
 
-rosne_info "Rosnebot setup — installing components..."
+rosne_set_step "Rosnebot setup — installing components"
 
 if ! install_system_deps; then
     rosne_warn "Automatic dependency install skipped or failed — checking required tools..."
@@ -33,6 +34,7 @@ if ! command -v route >/dev/null 2>&1 && [ ! -x /sbin/route ]; then
     rosne_die "route not found — install net-tools (see README)"
 fi
 
+rosne_set_step "Removing legacy catbot-setup files"
 [ -x ./remove-legacy ] && ./remove-legacy || true
 
 # Legacy folder name from older installs
@@ -41,11 +43,16 @@ if [ -d ./temprosnehook ] && [ ! -d ./rosnehook ]; then
     mv temprosnehook rosnehook
 fi
 
+# Legacy vac bypass repo name
+if [ -d ./just-disable-vac ] && [ ! -d ./vacbypass-modules ]; then
+    rosne_warn "Renaming just-disable-vac/ -> vacbypass-modules/"
+    mv just-disable-vac vacbypass-modules
+fi
+
 clone_or_pull "https://github.com/Scp079TheOldAi/rosnehook.git" "rosnehook" true
 mkdir -p user_instances
 
 if [ ! -f /opt/rosnehook/bin/librosnehook-textmode.so ]; then
-    rosne_info "Building rosnehook (textmode)..."
     build_rosnehook_textmode "$ROOT"
 else
     rosne_ok "rosnehook textmode binary already installed in /opt/rosnehook/bin/"
@@ -79,7 +86,9 @@ mkdir -p ./rosnehook-ipc-web-panel/logs
 touch ./rosnehook-ipc-web-panel/logs/main.log 2>/dev/null || true
 
 if [ -f /etc/firejail/firejail.config ]; then
-    sudo sed -i 's/^restricted-network yes/# restricted-network yes/g' /etc/firejail/firejail.config 2>/dev/null || true
+    rosne_set_step "Adjusting firejail restricted-network"
+    sudo sed -i 's/^restricted-network yes/# restricted-network yes/g' /etc/firejail/firejail.config 2>/dev/null || \
+        rosne_warn "Could not edit /etc/firejail/firejail.config — check firejail manually"
 fi
 
 install_navmeshes

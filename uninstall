@@ -7,6 +7,8 @@ echo "Removing legacy..."
 
 rm -rf ./build
 rm -rf ./temprosnehook
+rm -rf ./rosnehook
+rm -rf ./just-disable-vac
 rm -rf ./rosnehook-ipc-server
 rm -rf ./rosnehook-ipc-web-panel
 rm -rf ./vacbypass-modules

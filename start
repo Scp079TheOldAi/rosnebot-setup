@@ -1,54 +1,78 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 #
-# This script starts IPC server, account generator, etc.
+# Start IPC server, web panel, pulseaudio, optional XPRA.
 #
+set -euo pipefail
 
-if [ $EUID == 0 ]; then
-    echo "This script must not be run as root"
-    exit
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT"
+
+# shellcheck source=lib/common.sh
+source "$ROOT/lib/common.sh"
+
+require_not_root
+
+if [ ! -d "./user_instances" ]; then
+    rosne_die "You need to run ./rosnebots first."
 fi
 
-if ! [ -d "./user_instances" ]; then
-    echo "You need to run ./rosnebots first."
-    exit
-fi
-
-sudo mkdir -p /opt/steamapps
-mountpoint -q /opt/steamapps || sudo mount --bind ~/.steam/steam/steamapps/ /opt/steamapps
-
-ipcserver=$( ps faux | grep '/opt/rosnehook/ipc/bin/server' | grep -vw grep | awk '{ print $2 }' );
-[ -z "$ipcserver" ] && /opt/rosnehook/ipc/bin/server -s >/dev/null &
-[ -z "$ipcserver" ] && echo $! >/tmp/cat-ipc-server.pid
-
-if [ -e "/tmp/ncat-rosnehook-webpanel.pid" ] && ps -p `cat "/tmp/ncat-rosnehook-webpanel.pid"` >/dev/null; then
-    echo IPC panel already running.
+steam_apps=""
+if steam_apps="$(steam_root)"; then
+    :
 else
-    pushd rosnehook-ipc-web-panel
-    sudo PATH="$PATH" STEAM_LD_PRELOAD="$(cd ../ && pwd)/vacbypass-modules/build/bin64/libvpcfs.so.0" bash ./run.sh &
-    popd
+    rosne_die "Steam not found — install Steam and TF2 first."
 fi
 
-if [ -x "$(command -v pulseaudio)" ]; then
-    echo "Setting up micspam..."
-    pulse=$(pgrep -u "$USER" pulseaudio);
-    ([ ! -z "$pulse" ]) && pulseaudio --start &>/dev/null &
-    pactl load-module module-native-protocol-unix auth-anonymous=1 socket=/tmp/pulse.sock > /tmp/pulsemodule.id
+rosne_set_step "Binding Steam steamapps to /opt/steamapps"
+sudo mkdir -p /opt/steamapps
+if ! mountpoint -q /opt/steamapps; then
+    sudo mount --bind "$steam_apps/" /opt/steamapps || \
+        rosne_die "mount --bind failed for $steam_apps"
 fi
 
-if [ -x "$(command -v xpra)" ]; then
-    read -p "Do you want to start the XPRA display? (y/n): " choice
-    case "$choice" in 
-        y|Y ) xpra start :100;;
-        n|N ) echo "XPRA display not started.";;
-        * ) echo "Invalid choice. XPRA display not started.";;
+ipcserver=$(ps faux | grep '/opt/rosnehook/ipc/bin/server' | grep -vw grep | awk '{ print $2 }')
+if [ -z "$ipcserver" ]; then
+    /opt/rosnehook/ipc/bin/server -s >/dev/null &
+    echo $! >/tmp/cat-ipc-server.pid
+fi
+
+if [ -e "/tmp/ncat-rosnehook-webpanel.pid" ] && ps -p "$(cat "/tmp/ncat-rosnehook-webpanel.pid")" >/dev/null 2>&1; then
+    rosne_warn "IPC panel already running."
+else
+    pushd rosnehook-ipc-web-panel >/dev/null
+    sudo PATH="$PATH" STEAM_LD_PRELOAD="$(cd .. && pwd)/vacbypass-modules/build/bin64/libvpcfs.so.0" bash ./run.sh &
+    popd >/dev/null
+fi
+
+if command -v pulseaudio >/dev/null 2>&1; then
+    rosne_info "Setting up micspam..."
+    pulse=$(pgrep -u "$USER" pulseaudio || true)
+    if [ -n "$pulse" ]; then
+        pulseaudio --start &>/dev/null &
+    fi
+    pactl load-module module-native-protocol-unix auth-anonymous=1 socket=/tmp/pulse.sock > /tmp/pulsemodule.id 2>/dev/null || \
+        rosne_warn "pulseaudio module load failed — micspam may not work"
+fi
+
+if command -v xpra >/dev/null 2>&1; then
+    read -r -p "Do you want to start the XPRA display? (y/n): " choice
+    case "$choice" in
+        y|Y) xpra start :100 ;;
+        n|N) rosne_info "XPRA display not started." ;;
+        *) rosne_warn "Invalid choice. XPRA display not started." ;;
     esac
-fi 
+fi
 
-sleep 5;
+sleep 5
 
-echo "IPC Web Panel password: `cat /tmp/cat-webpanel-password`"
-echo "Fixing NVIDIA crash"
-sudo chmod 700 /opt/steamapps/common/Team\ Fortress\ 2/tf/glshaders.cfg
+if [ -f /tmp/cat-webpanel-password ]; then
+    echo "IPC Web Panel password: $(cat /tmp/cat-webpanel-password)"
+fi
+
+glshaders="/opt/steamapps/common/Team Fortress 2/tf/glshaders.cfg"
+if [ -f "$glshaders" ]; then
+    rosne_info "Fixing NVIDIA glshaders.cfg permissions"
+    sudo chmod 700 "$glshaders" 2>/dev/null || true
+fi
 
 echo "Open a web browser and go to localhost:8081 to see your Rosnehook IPC web panel."
