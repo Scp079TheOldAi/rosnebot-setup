@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # This script automatically sets up Steam avatars, nicknames, and gathers the SteamID32 for bots.
-# Change make_commands to False if you wish to get just the SteamID32, instead of Cathook's change playerstate command
+# Change make_commands to False if you wish to get just the SteamID32, instead of Rosnehook's change playerstate command
 # You do not have to "set up" a steam profile on each account for this to work, evidently.
 # Simply copy your accounts.txt and bot-profile.jpg here and run: ./auto-profile.py
 # Image format can be PNG, this script just expects the filename to be .jpg
@@ -70,7 +70,7 @@ for index, account in enumerate(accounts):
         id32 = str(client.steam_id.as_32)
         if make_commands:
             id_file.write(f'cat_pl_add_id {id32} CAT\n')
-            print('Saved the SteamID32 as a Cathook change playerstate command.')
+            print('Saved the SteamID32 as a Rosnehook change playerstate command.')
         else:
             id_file.write(f'{id32}\n')
             print('Saved the SteamID32 as raw.')

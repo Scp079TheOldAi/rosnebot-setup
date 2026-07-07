@@ -12,5 +12,5 @@ rm -rf ./rosnehook-ipc-web-panel
 rm -rf ./just-disable-vac
 rm -rf ./user_instances
 rm -rf ./rosnebot-database
-sudo rm -rf /opt/cathook/ipc
-sudo rm /opt/cathook/bin/libcathook-textmode.so
+sudo rm -rf /opt/rosnehook/ipc
+sudo rm /opt/rosnehook/bin/librosnehook-textmode.so

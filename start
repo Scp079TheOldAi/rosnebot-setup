@@ -17,11 +17,11 @@ fi
 sudo mkdir -p /opt/steamapps
 mountpoint -q /opt/steamapps || sudo mount --bind ~/.steam/steam/steamapps/ /opt/steamapps
 
-ipcserver=$( ps faux | grep '/opt/cathook/ipc/bin/server' | grep -vw grep | awk '{ print $2 }' );
-[ -z "$ipcserver" ] && /opt/cathook/ipc/bin/server -s >/dev/null &
+ipcserver=$( ps faux | grep '/opt/rosnehook/ipc/bin/server' | grep -vw grep | awk '{ print $2 }' );
+[ -z "$ipcserver" ] && /opt/rosnehook/ipc/bin/server -s >/dev/null &
 [ -z "$ipcserver" ] && echo $! >/tmp/cat-ipc-server.pid
 
-if [ -e "/tmp/ncat-cathook-webpanel.pid" ] && ps -p `cat "/tmp/ncat-cathook-webpanel.pid"` >/dev/null; then
+if [ -e "/tmp/ncat-rosnehook-webpanel.pid" ] && ps -p `cat "/tmp/ncat-rosnehook-webpanel.pid"` >/dev/null; then
     echo IPC panel already running.
 else
     pushd rosnehook-ipc-web-panel
