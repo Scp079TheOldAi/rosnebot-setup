@@ -35,16 +35,16 @@ print_troubleshooting() {
 
 --- Common fixes ---
 
-  Permission denied (./rosnebots / ./update)
-    chmod +x rosnebots update start stop uninstall remove-legacy indent
-    # or: bash ./rosnebots
+  Permission denied (./install-rosnebots / ./update)
+    chmod +x install-rosnebots install-catbots update start stop uninstall remove-legacy indent
+    # or: bash ./install-rosnebots
 
   Do not run as root
     Run as your normal user (sudo is used only when needed).
 
   Not a git repository / ZIP download
     git clone https://github.com/Scp079TheOldAi/rosnebot-setup.git
-    cd rosnebot-setup && ./rosnebots
+    cd rosnebot-setup && ./install-rosnebots
 
   sudo: a password is required / not in sudoers
     Use an account with sudo, or ask admin to add you to the sudo group.
@@ -83,7 +83,7 @@ print_troubleshooting() {
     - Install Team Fortress 2 in Steam and launch it once
     - cd rosnehook && ./scripts/copy-libvstdlib.sh
     - git submodule update --init --recursive
-    - Re-run: ./rosnebots
+    - Re-run: ./install-rosnebots
 
   libvstdlib.so / TF2 not found (copy-libvstdlib)
     Install TF2 via Steam. Paths checked:
@@ -97,7 +97,7 @@ print_troubleshooting() {
     - If shallow clone broke submodules: git clone --recursive <url>
 
   vacbypass-modules / IPC install failed
-    rm -rf vacbypass-modules/build && ./rosnebots
+    rm -rf vacbypass-modules/build && ./install-rosnebots
     # or: cd vacbypass-modules && mkdir -p build && cd build && cmake .. && make
 
   Steam / TF2 path missing (nav meshes skipped)
@@ -114,7 +114,7 @@ print_troubleshooting() {
     sudo chmod 700 /opt/steamapps/common/Team\ Fortress\ 2/tf/glshaders.cfg
 
   Old install still uses temprosnehook/
-    ./rosnebots renames it automatically, or: mv temprosnehook rosnehook
+    ./install-rosnebots renames it automatically, or: mv temprosnehook rosnehook
 
 More: https://github.com/Scp079TheOldAi/rosnebot-setup/issues
 EOF
@@ -136,7 +136,7 @@ require_git_repo() {
 ensure_script_permissions() {
     local dir="${1:-.}"
     local s
-    for s in rosnebots update start stop uninstall remove-legacy indent install-catbots; do
+    for s in install-rosnebots install-catbots rosnebots update start stop uninstall remove-legacy indent; do
         [ -f "$dir/$s" ] && chmod +x "$dir/$s" 2>/dev/null || true
     done
     [ -f "$dir/lib/common.sh" ] && chmod +x "$dir/lib/common.sh" 2>/dev/null || true
@@ -287,7 +287,7 @@ build_rosnehook_textmode() {
     jobs="$(cpu_count)"
 
     if [ ! -d "$rosne_dir" ]; then
-        rosne_die "Missing rosnehook/ — run ./rosnebots from the start."
+        rosne_die "Missing rosnehook/ — run ./install-rosnebots from the start."
     fi
 
     rosne_set_step "Initializing rosnehook submodules"
@@ -296,7 +296,7 @@ build_rosnehook_textmode() {
     git submodule update --init --recursive || rosne_die "Submodule init failed in rosnehook"
     if [ -x ./scripts/copy-libvstdlib.sh ]; then
         if ! ./scripts/copy-libvstdlib.sh; then
-            rosne_warn "copy-libvstdlib.sh failed — install TF2 in Steam, then re-run ./rosnebots"
+            rosne_warn "copy-libvstdlib.sh failed — install TF2 in Steam, then re-run ./install-rosnebots"
         fi
     fi
     popd >/dev/null

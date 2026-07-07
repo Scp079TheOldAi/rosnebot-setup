@@ -13,7 +13,7 @@ source "$ROOT/lib/common.sh"
 require_not_root
 
 if [ ! -d "./user_instances" ]; then
-    rosne_die "You need to run ./rosnebots first."
+    rosne_die "You need to run ./install-rosnebots first."
 fi
 
 steam_apps=""

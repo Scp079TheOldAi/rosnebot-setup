@@ -1,12 +1,12 @@
 # Download and Install Rosnebots
 
 ```bash
-git clone https://github.com/Scp079TheOldAi/rosnebot-setup.git; cd rosnebot-setup; chmod +x rosnebots update; ./rosnebots; ./update; cd .
+git clone https://github.com/Scp079TheOldAi/rosnebot-setup.git; cd rosnebot-setup; chmod +x install-rosnebots update; ./install-rosnebots; ./update; cd .
 ```
 
-If you see `Permission denied`, run `chmod +x rosnebots update` or `bash ./rosnebots`.
+If you see `Permission denied`, run `chmod +x install-rosnebots update` or `bash ./install-rosnebots`.
 
-`install-catbots` is deprecated — use **`./rosnebots`** instead.
+`install-catbots` is deprecated — use **`./install-rosnebots`** instead.
 
 Next you will have to edit the text document called accounts.txt in your rosnebot-setup folder and put the bots accounts in this format:
 
@@ -20,7 +20,7 @@ USERNAME:PASSWORD
 
 ## Required Dependencies
 
-`./rosnebots` tries to install these automatically. Manual install:
+`./install-rosnebots` tries to install these automatically. Manual install:
 
 ### Ubuntu/Debian/Mint/Pop!_OS
 
@@ -48,7 +48,7 @@ sudo zypper install -t pattern devel_basis cmake git nodejs20 npm firejail net-t
 
 ## Common errors
 
-On failure, `./rosnebots` prints a **Common fixes** block (permissions, cmake, TF2, submodules, Steam paths, npm, firejail, etc.).
+On failure, `./install-rosnebots` prints a **Common fixes** block (permissions, cmake, TF2, submodules, Steam paths, npm, firejail, etc.).
 
 Typical flow after a build error:
 
@@ -60,5 +60,5 @@ git submodule update --init --recursive
 ./scripts/copy-libvstdlib.sh
 cd ..
 # 3. Re-run installer
-./rosnebots
+./install-rosnebots
 ```

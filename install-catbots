@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deprecated — use ./rosnebots
+# Deprecated — use ./install-rosnebots
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-echo "[deprecated] install-catbots was renamed to ./rosnebots"
-exec "$ROOT/rosnebots" "$@"
+echo "[deprecated] install-catbots was renamed to ./install-rosnebots"
+exec "$ROOT/install-rosnebots" "$@"

@@ -24,7 +24,7 @@ if [ -d ./temprosnehook ] && [ ! -d ./rosnehook ]; then
 fi
 
 if [ ! -d ./rosnehook ]; then
-    rosne_die "rosnehook/ missing — run ./rosnebots first"
+    rosne_die "rosnehook/ missing — run ./install-rosnebots first"
 fi
 
 pushd rosnehook >/dev/null
