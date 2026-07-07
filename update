@@ -57,7 +57,7 @@ popd
 popd
 
 pushd rosnehook-ipc-web-panel
-git remote set-url origin https://github.com/Scp079TheOldAi/rosnehook-ipc-web-panel.g
+git remote set-url origin https://github.com/Scp079TheOldAi/rosnehook-ipc-web-panel.git
 bash update.sh
 popd
 
@@ -69,7 +69,7 @@ if [ -d ./rosnebot-database ]; then
 	git reset --hard origin/master
 	popd
 else
-	git clone --depth 1 https://github.com/Scp079TheOldAi/rosnebot-database
+	git clone --depth 1 https://github.com/Scp079TheOldAi/rosnebot-database.git
 fi
 
 echo "Copying navmeshes..."
