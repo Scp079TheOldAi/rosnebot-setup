@@ -36,7 +36,7 @@ print_troubleshooting() {
 --- Common fixes ---
 
   Permission denied (./install-rosnebots / ./update)
-    chmod +x install-rosnebots install-catbots update start stop uninstall remove-legacy indent
+    chmod +x install-rosnebots update start stop uninstall remove-legacy indent
     # or: bash ./install-rosnebots
 
   Do not run as root
@@ -136,7 +136,7 @@ require_git_repo() {
 ensure_script_permissions() {
     local dir="${1:-.}"
     local s
-    for s in install-rosnebots install-catbots rosnebots update start stop uninstall remove-legacy indent; do
+    for s in install-rosnebots update start stop uninstall remove-legacy indent; do
         [ -f "$dir/$s" ] && chmod +x "$dir/$s" 2>/dev/null || true
     done
     [ -f "$dir/lib/common.sh" ] && chmod +x "$dir/lib/common.sh" 2>/dev/null || true

@@ -6,8 +6,6 @@ git clone https://github.com/Scp079TheOldAi/rosnebot-setup.git; cd rosnebot-setu
 
 If you see `Permission denied`, run `chmod +x install-rosnebots update` or `bash ./install-rosnebots`.
 
-`install-catbots` is deprecated — use **`./install-rosnebots`** instead.
-
 Next you will have to edit the text document called accounts.txt in your rosnebot-setup folder and put the bots accounts in this format:
 
 ```
